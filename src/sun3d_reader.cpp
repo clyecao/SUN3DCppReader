@@ -472,27 +472,27 @@ void DataLocalProcess(string local_dir) {
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **argv) {
-  string sequence_name;
-  string local_dir;
-  string sequence_name_txt;
-  std::vector<string> sequence_names;
+	string sequence_name;
+	string local_dir;
+	string sequence_name_txt;
+	std::vector<string> sequence_names;
 
-  // if (argc == 1) {
-  //   passwd* pw = getpwuid(getuid());
-  //   std::string home_dir(pw->pw_dir);
-  //   sequence_name = "harvard_c11/hv_c11_2/";
-  //   local_dir     = home_dir + "/data/sun3d/" + sequence_name;
-  // } else 
+	// if (argc == 1) {
+	//   passwd* pw = getpwuid(getuid());
+	//   std::string home_dir(pw->pw_dir);
+	//   sequence_name = "harvard_c11/hv_c11_2/";
+	//   local_dir     = home_dir + "/data/sun3d/" + sequence_name;
+	// } else 
 
-  if (argc == 3) {
-    sequence_name_txt = argv[1];
-    local_dir     = argv[2];
-  } else {
-    cout << "Server and local directories are needed." << endl;
-    return 1;
-  }
+	if (argc == 3) {
+		sequence_name_txt = argv[1];
+		local_dir     = argv[2];
+	} else {
+		cout << "Server and local directories are needed." << endl;
+		return 1;
+	}
 
-  if (!load_sequence_names(sequence_name_txt, sequence_names))
+	if (!load_sequence_names(sequence_name_txt, sequence_names))
 	{
 		cout << "load sequence file: " << sequence_name_txt << " failed." << endl;
 		return 1;
@@ -501,11 +501,11 @@ int main(int argc, char **argv) {
 	for (int i=0; i<sequence_names.size(); i++)
 	{
 		sequence_name = sequence_names[i]+"/";
-		DataFromServerToLocal(sequence_names[i]+"/", local_dir + sequence_name);
-  		DataLocalProcess(local_dir);
+		DataFromServerToLocal(sequence_names[i], local_dir + sequence_name);
+		DataLocalProcess(local_dir);
 	}
 
 
-  return 0;
+	return 0;	
 }
 
