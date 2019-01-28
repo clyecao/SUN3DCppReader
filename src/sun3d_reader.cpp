@@ -502,7 +502,7 @@ int main(int argc, char **argv) {
 	{
 		sequence_name = sequence_names[i]+"/";
 		DataFromServerToLocal(sequence_names[i], local_dir + sequence_name);
-		DataLocalProcess(local_dir);
+		DataLocalProcess(local_dir + sequence_name);
 	}
 
 
