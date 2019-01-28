@@ -9,11 +9,35 @@
 #include <dirent.h>
 #include <cerrno>
 #include <algorithm>
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <png++/png.hpp>
 #include <jpeglib.h>
 
 using namespace std;
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool load_sequence_names(string filename, vector<string> &sequence_names)
+{
+    sequence_names.clear();    
+    ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        cout << "open file " << filename << " failed." << endl;
+        return false;
+    }
+
+    string sequence_name;
+
+    while(file >> sequence_name)
+        sequence_names.push_back(sequence_name);
+    
+    return true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -450,22 +474,37 @@ void DataLocalProcess(string local_dir) {
 int main(int argc, char **argv) {
   string sequence_name;
   string local_dir;
+  string sequence_name_txt;
+  std::vector<string> sequence_names;
 
-  if (argc == 1) {
-    passwd* pw = getpwuid(getuid());
-    std::string home_dir(pw->pw_dir);
-    sequence_name = "harvard_c11/hv_c11_2/";
-    local_dir     = home_dir + "/data/sun3d/" + sequence_name;
-  } else if (argc == 3) {
-    sequence_name = argv[1];
+  // if (argc == 1) {
+  //   passwd* pw = getpwuid(getuid());
+  //   std::string home_dir(pw->pw_dir);
+  //   sequence_name = "harvard_c11/hv_c11_2/";
+  //   local_dir     = home_dir + "/data/sun3d/" + sequence_name;
+  // } else 
+
+  if (argc == 3) {
+    sequence_name_txt = argv[1];
     local_dir     = argv[2];
-    local_dir     += sequence_name;
   } else {
     cout << "Server and local directories are needed." << endl;
+    return 1;
   }
 
-  DataFromServerToLocal(sequence_name, local_dir);
-  DataLocalProcess(local_dir);
+  if (!load_sequence_names(sequence_name_txt, sequence_names))
+	{
+		cout << "load sequence file: " << sequence_name_txt << " failed." << endl;
+		return 1;
+	}
+
+	for (int i=0; i<sequence_names.size(); i++)
+	{
+		sequence_name = sequence_names[i]+"/";
+		DataFromServerToLocal(sequence_names[i]+"/", local_dir + sequence_name);
+  		DataLocalProcess(local_dir);
+	}
+
 
   return 0;
 }
